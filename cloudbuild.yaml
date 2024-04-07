@@ -1,0 +1,20 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/i-freedom-412206/my-app:$COMMIT_SHA', '.']
+
+  # Push the Docker image to Google Container Registry (GCR)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/i-freedom-412206/my-app:$COMMIT_SHA']
+
+  # Deploy the Docker image to Google Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'your-app-name'
+      - '--image=gcr.io/i-freedom-412206/your-app-name:$COMMIT_SHA'
+      - '--region=us-central1'  # Change to your desired region
+      - '--platform=managed'
+      - '--allow-unauthenticated'  # Remove if authentication is required
+      # Add additional flags as needed (e.g., environment variables, concurrency settings)
